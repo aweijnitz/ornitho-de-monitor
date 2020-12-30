@@ -4,6 +4,7 @@ testRun.sh
 localInvoke.sh
 runLocal.js
 .idea/
+pubsubkey.json
 
 # Created by https://www.toptal.com/developers/gitignore/api/emacs,node,webstorm,intellij
 # Edit at https://www.toptal.com/developers/gitignore?templates=emacs,node,webstorm,intellij

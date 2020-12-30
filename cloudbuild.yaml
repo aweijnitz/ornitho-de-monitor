@@ -1,4 +1,8 @@
 steps:
+  # Retrieve credentials from Fort Knox
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args: [ '-c', "gcloud secrets versions access latest --secret=ornitho-pubsub --format='get(payload.data)' | tr '_-' '/+' | base64 -d > pubsubkey.json" ]
   # Build the container image
   - name: 'gcr.io/cloud-builders/docker'
     args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/ornitho-de-scraper:$COMMIT_SHA', '.' ]

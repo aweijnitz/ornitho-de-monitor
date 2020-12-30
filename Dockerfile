@@ -6,4 +6,7 @@ COPY . .
 EXPOSE 8080
 ENV  PATH="${PATH}:/node_modules/.bin"
 ENV NODE_ENV="production"
+ENV PUBSUB_TOPIC="projects/ornitho-de-monitor/topics/ornitho-bus"
+ENV GOOGLE_CLOUD_PROJECT="ornitho-de-monitor"
+ENV GOOGLE_APPLICATION_CREDENTIALS="pubsubkey.json"
 CMD [ "node", "server.js" ]
