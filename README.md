@@ -22,7 +22,9 @@ __These are the main components:__
 - Docker
 
 __NOTE:__
-This project currently only runs in docker and cannot be started locally. This is because it uses Puppeteer as a provided dependency inside container (saves a huge amount of installation time and guarantees that Puppeteer + Chrome + OS are all in sync).
+This project currently only runs in docker and cannot be started locally. This is because it uses Puppeteer as a provided 
+dependency inside container (saves a huge amount of installation time and guarantees that Puppeteer + Chrome + OS are all 
+in sync).
 
 To run locally, just add the puppeteer dependency ```npm install puppeteer```.
 
@@ -47,14 +49,17 @@ This is useful for tuning DOM queries in Puppeteer (remember to add the dependen
 
     npm run serveTestFile
 
-### Deployment of The Scraper in Cloud Run
+## Deployment
 
-Deployments are triggered by pushing code to the branch ```deploy```.
+Deployments are triggered by pushing code to the branch ```deploy```. This triggers a CI/CD job in Google Cloud Build.
 
     git checkout deploy
     git merge master
     git push
 
+There is only one build file, ```cloudbuild.yaml```. The functions and the docker container are always built in concert. 
+This is because the system is small enough to build fast and deploying everything together is an easy way to keep things 
+consistent.
 
 ## Relevant links
 
