@@ -8,6 +8,7 @@
     "buildCloudRunContainer": "gcloud builds submit --tag gcr.io/ornitho-de-monitor/ornitho-de-scraper",
     "deployCloudRunContainer": "gcloud run deploy ornitho-de-scraper --region=europe-west6 --image gcr.io/ornitho-de-monitor/ornitho-de-scraper --platform managed",
     "deployAnalyzer": "gcloud functions deploy analyzeObservations --source=./src --entry-point=analyzeObservations --runtime nodejs12 --memory=256MB --max-instances=3 --trigger-topic=ornitho-bus",
+    "deployNotifier": "gcloud functions deploy notifyAll --source=./src --entry-point=notifyAll --runtime nodejs12 --memory=256MB --max-instances=3 --trigger-topic=ornitho-bus",
     "invoke": "gcloud functions call ornitho-de-monitor --data '{\"name\":\"Keyboard Cat\"}'",
     "invokeEncoded": "DATA=$(printf 'Hello!'|base64) && gcloud functions call helloPubSub --data '{\"data\":\"'$DATA'\"}'",
     "viewFunctionLogs": "gcloud functions logs read ornitho-de-monitor",

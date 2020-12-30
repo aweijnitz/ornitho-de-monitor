@@ -11,6 +11,18 @@ steps:
   - name: 'gcr.io/cloud-builders/npm'
     args: [ 'test' ]
     dir: '.'
+  # Deploy the notifier function
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'functions'
+      - 'deploy'
+      - 'notifyAll'
+      - '--source=./src'
+      - '--entry-point=notifyAll'
+      - '--runtime=nodejs12'
+      - '--memory=128MB'
+      - '--max-instances=3'
+      - '--trigger-topic=ornitho-bus'
   # Deploy the analyzer function
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
