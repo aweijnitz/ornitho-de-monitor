@@ -20,7 +20,7 @@ steps:
       - '--source=./src'
       - '--entry-point=analyzeObservations'
       - '--runtime=nodejs12'
-      - '--memory=256MB'
+      - '--memory=128MB'
       - '--max-instances=3'
       - '--trigger-topic=ornitho-bus'
   # Build the container image for the scraper

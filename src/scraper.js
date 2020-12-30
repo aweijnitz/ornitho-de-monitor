@@ -37,10 +37,13 @@ const getScrapeURL = () => {
 }
 
 const publishMessage = async (msgObj) => {
-  const dataBuffer = Buffer.from(JSON.stringify(msgObj));
+  //const dataBuffer = Buffer.from(JSON.stringify(msgObj));
   
   try {
-    const messageId = await pubSubClient.topic(topicName).publish(dataBuffer);
+    const attributes = {
+      type: 'observations'
+    };
+    const messageId = await pubSubClient.topic(topicName).publishJSON(msgObj, attributes); // https://googleapis.dev/nodejs/pubsub/latest/Topic.html#publishJSON
     console.log(`Message ${messageId} published.`);
   } catch (error) {
     console.error(`Received error while publishing: ${error.message}`);

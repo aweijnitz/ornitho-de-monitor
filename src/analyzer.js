@@ -14,6 +14,11 @@ const analyzeMsg = msgPayload => {
  */
 exports.analyzeObservations = (message, context) => {
   console.log('ANALYZER TRIGGERED!', JSON.stringify(message), JSON.stringify(context));
+  const msgType = message.attibutes ? message.attibutes.type : false;
+  if(!msgType || msgType !== 'observations') {
+    console.log('Analyzer skipping message.', msgType);
+    return;
+  }
   const payload = message.data
     ? Buffer.from(message.data, 'base64').toString()
     : false;
