@@ -2,17 +2,17 @@
   "name": "ornitho-de-monitor",
   "version": "0.0.1",
   "description": "Collect latest interesting observations from ornitho.de",
-  "main": "server.js",
+  "main": "src/index.js",
   "scripts": {
     "devFunctions": "npx functions-framework --target=ornitho-de-monitor",
     "buildCloudRunContainer": "gcloud builds submit --tag gcr.io/ornitho-de-monitor/ornitho-de-scraper",
     "deployCloudRunContainer": "gcloud run deploy ornitho-de-scraper --region=europe-west6 --image gcr.io/ornitho-de-monitor/ornitho-de-scraper --platform managed",
-    "deployAsFunction": "gcloud functions deploy getObservations --entry-point=getObservations --runtime nodejs12 --memory=1024MB --max-instances=3 --trigger-topic=ornitho-bus",
+    "deployAnalyzer": "gcloud functions deploy analyzeObservations --source=./src --entry-point=analyzeObservations --runtime nodejs12 --memory=256MB --max-instances=3 --trigger-topic=ornitho-bus",
     "invoke": "gcloud functions call ornitho-de-monitor --data '{\"name\":\"Keyboard Cat\"}'",
     "invokeEncoded": "DATA=$(printf 'Hello!'|base64) && gcloud functions call helloPubSub --data '{\"data\":\"'$DATA'\"}'",
     "viewFunctionLogs": "gcloud functions logs read ornitho-de-monitor",
     "serveTestFile": "cd testdata && python -m SimpleHTTPServer 8000",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"No test specified\" && exit 0"
   },
   "author": "Anders Weijnitz",
   "license": "ISC",
