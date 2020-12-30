@@ -13,9 +13,9 @@ steps:
       - 'deploy'
       - 'ornitho-de-scraper'
       - '--image'
-      - 'gcr.io/$PROJECT_ID/ornitho-de-scraper:$COMMIT_SHA'
+      - 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$COMMIT_SHA'
       - '--region'
-      - 'REGION'
+      - '${_DEPLOY_REGION}'
       - '--platform'
       - 'managed'
 images:
