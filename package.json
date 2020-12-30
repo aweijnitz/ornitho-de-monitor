@@ -1,0 +1,28 @@
+{
+  "name": "ornitho-de-monitor",
+  "version": "0.0.1",
+  "description": "Collect latest interesting observations from ornitho.de",
+  "main": "server.js",
+  "scripts": {
+    "devFunctions": "npx functions-framework --target=ornitho-de-monitor",
+    "buildCloudRunContainer": "gcloud builds submit --tag gcr.io/ornitho-de-monitor/ornitho-de-scraper",
+    "deployCloudRunContainer": "gcloud run deploy ornitho-de-scraper --region=europe-west6 --image gcr.io/ornitho-de-monitor/ornitho-de-scraper --platform managed",
+    "deployAsFunction": "gcloud functions deploy getObservations --entry-point=getObservations --runtime nodejs12 --memory=1024MB --max-instances=3 --trigger-topic=ornitho-bus",
+    "invoke": "gcloud functions call ornitho-de-monitor --data '{\"name\":\"Keyboard Cat\"}'",
+    "invokeEncoded": "DATA=$(printf 'Hello!'|base64) && gcloud functions call helloPubSub --data '{\"data\":\"'$DATA'\"}'",
+    "viewFunctionLogs": "gcloud functions logs read ornitho-de-monitor",
+    "serveTestFile": "cd testdata && python -m SimpleHTTPServer 8000",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Anders Weijnitz",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/pubsub": "^2.7.0",
+    "express": "^4.17.1",
+    "express-async-handler": "^1.1.4",
+    "express-rate-limit": "^5.2.3"
+  },
+  "devDependencies": {
+    "@google-cloud/functions-framework": "^1.7.1"
+  }
+}

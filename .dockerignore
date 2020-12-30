@@ -1,0 +1,9 @@
+Dockerfile
+.dockerignore
+node_modules
+npm-debug.log
+testdata
+setAPICredentials.sh
+setGCloudProject.sh
+testRun.sh
+buildAndRunDocker.sh
