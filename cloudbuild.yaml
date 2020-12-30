@@ -15,13 +15,13 @@ steps:
       - '--memory=256MB'
       - '--max-instances=3'
       - '--trigger-topic=ornitho-bus'
-  # Build the container image
+  # Build the container image for the scraper
   - name: 'gcr.io/cloud-builders/docker'
     args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$COMMIT_SHA', '.' ]
   # Push the container image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: [ 'push', 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$COMMIT_SHA' ]
-  # Deploy container image to Cloud Run
+  # Deploy scraper container image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
