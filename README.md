@@ -47,12 +47,13 @@ This is useful for tuning DOM queries in Puppeteer (remember to add the dependen
 
     npm run serveTestFile
 
-### Manual Deployment of The Scraper in Cloud Run
+### Deployment of The Scraper in Cloud Run
 
-Make sure you have set the gcloud command to use your intended project first. ```gcloud config set project <YOUR PROJECT NAME>```
+Deployments are triggered by pushing code to the branch ```deploy```.
 
-    npm run buildCloudRunContainer
-    npm run deployCloudRunContainer
+    git checkout deploy
+    git merge master
+    git push
 
 
 ## Relevant links

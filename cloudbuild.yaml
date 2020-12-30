@@ -5,10 +5,10 @@ steps:
     args: [ '-c', "gcloud secrets versions access latest --secret=ornitho-pubsub --format='get(payload.data)' | tr '_-' '/+' | base64 -d > pubsubkey.json" ]
   # Build the container image
   - name: 'gcr.io/cloud-builders/docker'
-    args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/ornitho-de-scraper:$COMMIT_SHA', '.' ]
+    args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$COMMIT_SHA', '.' ]
   # Push the container image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: [ 'push', 'gcr.io/$PROJECT_ID/ornitho-de-scraper:$COMMIT_SHA' ]
+    args: [ 'push', 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$COMMIT_SHA' ]
   # Deploy container image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
@@ -23,4 +23,4 @@ steps:
       - '--platform'
       - 'managed'
 images:
-  - 'gcr.io/$PROJECT_ID/ornitho-de-scraper:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$COMMIT_SHA'
