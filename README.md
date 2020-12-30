@@ -31,7 +31,7 @@ To run locally, just add the puppeteer dependency ```npm install puppeteer```.
 - Create a project in Google Cloud
 - Create IAM Service Account for API Access
 - Enable Functions, Cloud Run, PubSub, Cloud Scheduler, and a Storage Bucket
-
+- Deployment takes place using Google Cloud Build CI/CD hooked up to monitor the branch ```deploy``` on this repo.
 
 ## Local Development
 
