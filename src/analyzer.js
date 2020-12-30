@@ -14,7 +14,7 @@ const analyzeMsg = msgPayload => {
  */
 exports.analyzeObservations = (message, context) => {
   console.log('ANALYZER TRIGGERED!', JSON.stringify(message), JSON.stringify(context));
-  const msgType = message.attibutes ? message.attibutes.type : false;
+  const msgType = message.attributes ? message.attributes.type : false;
   if(!msgType || msgType !== 'observations') {
     console.log('Analyzer skipping message.', msgType);
     return;
