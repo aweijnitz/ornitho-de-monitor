@@ -61,7 +61,7 @@ const storeData = async (contents, file) => {
 
 
 
-exports = {
+module.exports = {
   createIfNotExists,
   readJSONFile,
   storeData

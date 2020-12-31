@@ -2,14 +2,14 @@ const {Storage} = require('@google-cloud/storage');
 const {
   publishNotificationMessage,
   isObservationMessage
-} = require('utils/publishMessage');
+} = require('./utils/publishMessage');
 const {
   createIfNotExists,
   readJSONFile,
   storeData
-} = require('utils/storageUtils');
+} = require('./utils/storageUtils');
 
-const {isSameDay} = require('utils/reportUtils');
+const {isSameDay} = require('./utils/reportUtils');
 
 // Setup Storage
 // https://googleapis.dev/nodejs/storage/latest/

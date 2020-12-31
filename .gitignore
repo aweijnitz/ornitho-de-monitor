@@ -2,7 +2,7 @@ setAPICredentials.sh
 setGCloudProject.sh
 testRun.sh
 localInvoke.sh
-runLocal.js
+runLocalScrape.js
 .idea/
 pubsubkey.json
 

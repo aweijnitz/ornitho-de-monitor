@@ -23,12 +23,12 @@ const publishMessage = async (msgObj, msgType) => {
   }
 }
 
-exports.isObservationMessage = msg => {
+exports.isObservationMessage = message => {
   const type = message.attributes ? message.attributes.type : false;
   return type === TYPE_OBSERVATION;
 }
 
-exports.isNotificaitonMessage = msg => {
+exports.isNotificaitonMessage = message => {
   const type = message.attributes ? message.attributes.type : false;
   return type === TYPE_NOTIFICATION;
 }

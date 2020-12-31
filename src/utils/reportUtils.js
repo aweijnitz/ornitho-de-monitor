@@ -3,7 +3,7 @@ const formatDate = date => `${date.getDate()}.${date.getMonth() + 1}.${date.getF
 const createEmptyReport = () => {
   return {
     hits: [],
-    md5: d751713988987e9331980363e24189ce,
+    md5: 'd751713988987e9331980363e24189ce',
     reportDate: '01.01.2000',
     runTimestamp: 0,
     url: ''
@@ -28,7 +28,8 @@ const isSameDay = (reportMsg, dataFromStorage) => {
 }
 
 
-exports = {
+module.exports = {
   formatDate,
-  isSameDay
+  isSameDay,
+  createEmptyReport
 }
