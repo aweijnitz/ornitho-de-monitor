@@ -1,13 +1,11 @@
 const puppeteer = require('puppeteer');
 const crypto = require('crypto');
-const {PubSub} = require('@google-cloud/pubsub');
+const { publishObservationsMessage } = require('./utils/publishMessage');
+const { formatDate } = require('utils/reportUtils');
+
 const mode = process.env.NODE_ENV || 'development';
 console.log('Starting in mode ' + mode)
 
-// Setup pub sub
-const projectId = process.env.GOOGLE_CLOUD_PROJECT || 'GOOGLE_CLOUD_PROJECT_NOT_SET';
-const topicName = process.env.PUBSUB_TOPIC || 'PUBSUB_TOPIC_NOT_SET';
-const pubSubClient = new PubSub({projectId});
 const PUPPETEER_OPTIONS = {
   headless: true,
   args: [
@@ -24,7 +22,7 @@ const PUPPETEER_OPTIONS = {
 
 const getTodayString = () => {
   const date = new Date();
-  return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
+  return formatDate(date);
 }
 
 const getScrapeURL = () => {
@@ -34,21 +32,6 @@ const getScrapeURL = () => {
   if (mode.indexOf('production') > -1)
     URL = `https://www.ornitho.de/index.php?m_id=94&p_c=5&p_cc=213&sp_tg=1&sp_DFrom=${today}&sp_DTo=${today}&sp_DSeasonFromDay=2&sp_DSeasonFromMonth=1&sp_DSeasonToDay=31&sp_DSeasonToMonth=12&sp_DChoice=offset&sp_DOffset=1&speciesFilter=&sp_S=32045&sp_SChoice=category&sp_Cat[veryrare]=1&sp_Cat[rare]=1&sp_Family=1&sp_PChoice=canton&sp_cC=0000000000000000000000000000000000000000000000000000000000000010000110001001001000000000000000100111001000000000110000111011000010001001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000&sp_cCO=010000000000000000000000000&sp_CommuneCounty=586&sp_Commune=18419&sp_Info=&sp_P=0&sp_Coord[W]=11.509840183125&sp_Coord[S]=48.047729754841&sp_Coord[E]=11.527809635057&sp_Coord[N]=48.065699206773&sp_AltitudeFrom=-19&sp_AltitudeTo=2962&sp_CommentValue=&sp_OnlyAH=0&sp_Ats=-00000&sp_project=&sp_FChoice=list&sp_FDisplay=DATE_PLACE_SPECIES&sp_DFormat=DESC&sp_FOrderListSpecies=SYSTEMATIC&sp_FListSpeciesChoice=DATA&sp_DateSynth=${today}&sp_FOrderSynth=ALPHA&sp_FGraphChoice=DATA&sp_FGraphFormat=auto&sp_FAltScale=250&sp_FAltChoice=DATA&sp_FMapFormat=none&submit=Abfrage+starten&mp_item_per_page=60`;
   return URL;
-}
-
-const publishMessage = async (msgObj) => {
-  //const dataBuffer = Buffer.from(JSON.stringify(msgObj));
-  
-  try {
-    const attributes = {
-      type: 'observations'
-    };
-    const messageId = await pubSubClient.topic(topicName).publishJSON(msgObj, attributes); // https://googleapis.dev/nodejs/pubsub/latest/Topic.html#publishJSON
-    console.log(`Message ${messageId} published.`);
-  } catch (error) {
-    console.error(`Received error while publishing: ${error.message}`);
-    process.exitCode = 1;
-  }
 }
 
 const closeChrome = async (page, browser) => {
@@ -95,7 +78,7 @@ const scrapeData = async (usePubSub = true) => {
       const result = {};
       let observationsList = null;
       const observationsListDOMElement = document.querySelector("#td-main-table > tbody > tr > td > div.listContainer");
-      observationsListDOMElement !== null ?  observationsList = observationsListDOMElement.children : observationsList = [];
+      observationsListDOMElement !== null ? observationsList = observationsListDOMElement.children : observationsList = [];
       console.log('In-Browser: Nr observations in list ', observationsList.length);
       result.hits = [];
       let currentEntry = {};
@@ -109,14 +92,13 @@ const scrapeData = async (usePubSub = true) => {
         }
       }
       return result;
-      
     });
     scrapedData.url = URL;
     scrapedData.md5 = crypto.createHash('md5').update(JSON.stringify(scrapedData.hits)).digest("hex")
     scrapedData.runTimestamp = Date.now();
     scrapedData.reportDate = getTodayString();
     console.log(JSON.stringify(scrapedData));
-    usePubSub ? publishMessage(scrapedData) : console.log(JSON.stringify(scrapedData));
+    usePubSub ? await publishObservationsMessage(scrapedData) : console.log('Skipped publishing message');
     
   } catch (err) {
     console.error(err);

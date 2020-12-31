@@ -1,6 +1,8 @@
+
 const processMsg = msgPayload => {
   console.log('Analyzing', JSON.stringify(msgPayload));
   console.log('Nr hits', msgPayload.hits.length);
+  
 }
 
 /**

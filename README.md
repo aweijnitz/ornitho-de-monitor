@@ -82,6 +82,18 @@ The __SearchHitItems__ are structured as follows
         reports: [<array of reported spieces>]
     }
 
+### Book keeping
+
+To remember and compare new reports to previous data, a book-keeping file is kept in a Cloud Storage Blob.
+It is simply a serialized JSON object with the following format:
+
+    {
+        created: <Data of blob creation, in the format of Date.now()>,
+        latestHash: <last seen hash>,
+        reports: [<last few report messages, most recent first>]
+    }
+        
+
 ## Relevant links
 
 - __Cloud Scheduler__ - Schedule functions to run regularly https://cloud.google.com/scheduler/docs/tut-pub-sub#create_a_job
