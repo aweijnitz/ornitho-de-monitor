@@ -57,9 +57,30 @@ Deployments are triggered by pushing code to the branch ```deploy```. This trigg
     git merge master
     git push
 
-There is only one build file, ```cloudbuild.yaml```. The functions and the docker container are always built in concert. 
+There is only one build file, ```cloudbuild.yaml```. The functions and the docker container are always built and deployed in concert. 
 This is because the system is small enough to build fast and deploying everything together is an easy way to keep things 
 consistent.
+
+## Implementation Details
+
+### Message Format
+
+The scraper scrapes and posts a report message to the Topic with the following format
+
+    { 
+        hits: […SearchHitItems], 
+        md5: <MD5 hash of hits array>, 
+        reportDate: <Day of the report, ex '30.12.2020'>, 
+        runTimestamp: <Unix epoch of the run. ex 1609362435719> 
+        url: <URL used for the scrape run>
+    }
+
+The __SearchHitItems__ are structured as follows
+
+    {
+        location: <Name of reported location in Ornitho>
+        reports: [<array of reported spieces>]
+    }
 
 ## Relevant links
 
