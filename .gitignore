@@ -5,6 +5,8 @@ localInvoke.sh
 runLocalScrape.js
 .idea/
 pubsubkey.json
+cloud_sql_proxy
+db-details.txt
 
 # Created by https://www.toptal.com/developers/gitignore/api/emacs,node,webstorm,intellij
 # Edit at https://www.toptal.com/developers/gitignore?templates=emacs,node,webstorm,intellij

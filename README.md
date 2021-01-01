@@ -49,6 +49,14 @@ This is useful for tuning DOM queries in Puppeteer (remember to add the dependen
 
     npm run serveTestFile
 
+__Install and run the Cloud SQL Proxy__
+
+This makes local development possible, using the cloud database.
+
+    cd scripts
+    ./installCLoudSQLProxy.sh # Convenience script for MacOSX. Only needed once.
+    INSTANCE_CONNECTION_NAME='<YOUR_DB_CONNECTION_STRING>' ./runCloudSQLProxy.sh
+
 ## Deployment
 
 Deployments are triggered by pushing code to the branch ```deploy```. This triggers a CI/CD job in Google Cloud Build.

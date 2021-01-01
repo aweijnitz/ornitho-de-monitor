@@ -7,7 +7,7 @@ const {
   createIfNotExists,
   readJSONFile,
   storeData
-} = require('./utils/storageUtils');
+} = require('./persistence/storageUtils');
 
 const {isSameDay} = require('./utils/reportUtils');
 
