@@ -1,28 +1,15 @@
-const {Storage} = require('@google-cloud/storage');
 const {
   publishNotificationMessage,
   isObservationMessage
 } = require('./utils/publishMessage');
+
+const {isSameDay, createEmptyReport} = require('./utils/reportUtils');
+
 const {
-  createIfNotExists,
-  readJSONFile,
-  storeData
-} = require('./persistence/storageUtils');
+  getLatestNReports,
+  saveReport,
+} = require('./persistence/index');
 
-const {isSameDay} = require('./utils/reportUtils');
-
-// Setup Storage
-// https://googleapis.dev/nodejs/storage/latest/
-const bucketName = 'ornithodata';
-const bookKeepingFileName = 'ornitho-de-data.json'
-const storage = new Storage(); // new Storage({keyFilename: "key.json"});
-const myBucket = storage.bucket(bucketName);
-
-
-const addAndTruncate = (newItem, dataStoreReports, maxLength = 16) => {
-  const length = dataStoreReports.unshift(newItem);
-  return length > maxLength ? dataStoreReports.slice(0, maxLength) : dataStoreReports;
-}
 
 /**
  * Check report, do book-keeping and trigger notification if needed.
@@ -33,20 +20,17 @@ const addAndTruncate = (newItem, dataStoreReports, maxLength = 16) => {
 const analyzeMsg = async newReport => {
   console.log('Analyzing', JSON.stringify(newReport));
   console.log('hits', newReport.hits);
-  const dataFile = myBucket.file(bookKeepingFileName);
-  await createIfNotExists(dataFile);
-  const dataFromStorage = await readJSONFile(dataFile);
-  console.log('dataFromStorage', JSON.stringify(dataFromStorage));
+  const storageRecord = await getLatestNReports(1);
+  const lastReport = storageRecord && storageRecord.length > 0 ? storageRecord[0].report : createEmptyReport();
+  console.log('lastReport', JSON.stringify(lastReport));
   
-  if ((dataFromStorage.latestHash !== newReport.md5)
-    && isSameDay(newReport, dataFromStorage)) {
+  if ((lastReport.md5 !== newReport.md5)
+    && isSameDay(newReport, lastReport)) {
     // Ok, so we now know we have a report which is different from last time.
     // If the day rolled over, the report will be different, but we don't want to be notified about it,
     // but we got here, so the report changed and it is worth while notifying about it.
     publishNotificationMessage(newReport);
-    dataFromStorage.latestHash = newReport.md5;
-    dataFromStorage.reports = addAndTruncate(newReport, dataFromStorage.reports);
-    return storeData(dataFromStorage, dataFile);
+    return saveReport(newReport);
   }
 }
 

@@ -1,5 +1,23 @@
 const crypto = require('crypto');
 
+/****** NOTE!
+ * Currently not in use, since Could Functions for some reason do not install the storage npm package.
+ *
+ * Leaving this file here for better days. See index.js for the database backed storage.
+ *
+ *
+ * This was the old initialization code
+ *
+ * // Setup Storage
+ // https://googleapis.dev/nodejs/storage/latest/
+ const bucketName = 'ornithodata';
+ const bookKeepingFileName = 'ornitho-de-data.json'
+ const storage = new Storage(); // new Storage({keyFilename: "key.json"});
+ const myBucket = storage.bucket(bucketName);
+ *
+ */
+
+
 /**
  * Helper to create the scaffold of the storage object.
  *

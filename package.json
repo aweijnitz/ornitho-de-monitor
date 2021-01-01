@@ -18,13 +18,12 @@
   "author": "Anders Weijnitz",
   "license": "ISC",
   "dependencies": {
-    "@google-cloud/pubsub": "^2.7.0",
-    "@google-cloud/storage": "^5.7.0",
     "express": "^4.17.1",
     "express-async-handler": "^1.1.4",
     "express-rate-limit": "^5.2.3",
     "knex": "^0.21.15",
-    "pg": "^8.5.1"
+    "pg": "^8.5.1",
+    "@google-cloud/pubsub": "^2.7.0"
   },
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.7.1"
