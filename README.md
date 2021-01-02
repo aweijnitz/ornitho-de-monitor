@@ -10,8 +10,8 @@ There are a few moving parts in the architecture and since I use this project to
 __These are the main components:__
 
 - **The Scraper** - Scrapes ornitho.de for recent reports and posts the result to a PubSub topic. Uses Puppeteer to launch a headless browser and collect the data. Deployed as a container in __Cloud Run__.
-- **The Analyzer** (**planned**) - Cloud Function that triggers on messages from The Scraper on a PubSub Topic. Posts a message to the PubSub topic, in case it finds something worthwhile. Does book keeping in Storage Bucket. 
-- **The Notifier** (**planned**) - Cloud Function that triggers on messages from The Analyzer. Updates a webpage and notifies users.
+- **The Analyzer** - CloudRun function that triggers on messages from The Scraper on a PubSub Topic. Posts a message to the PubSub topic, in case it finds something worthwhile. Does book keeping in Storage Bucket. 
+- **The Notifier** (**In progress**) - CloudRun function that triggers on messages from The Analyzer. Updates a webpage and notifies users.
 
 ## Setup
 
