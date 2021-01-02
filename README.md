@@ -104,6 +104,8 @@ It is simply a serialized JSON object with the following format:
 
 ## Relevant links
 
+- __Triggering Cloud Run from PubSub__ - https://cloud.google.com/run/docs/triggering/pubsub-push
+- __Connecting up Cloud Run and Cloud SQL__ - https://cloud.google.com/sql/docs/postgres/connect-run
 - __Cloud Scheduler__ - Schedule functions to run regularly https://cloud.google.com/scheduler/docs/tut-pub-sub#create_a_job
 - __Running locally__ - Function Frameworks https://cloud.google.com/functions/docs/running/function-frameworks
 - __Functions Framework__ - https://github.com/GoogleCloudPlatform/functions-framework-nodejs
