@@ -29,6 +29,7 @@ const analyzeMsg = async newReport => {
     // Ok, so we now know we have a report which is different from last time.
     // If the day rolled over, the report will be different, but we don't want to be notified about it,
     // but we got here, so the report changed and it is worth while notifying about it.
+    onsole.log('Pushing notification and saving: ', lastReport.md5, JSON.stringify(lastReport));
     await publishNotificationMessage(newReport);
     return saveReport(newReport);
   }

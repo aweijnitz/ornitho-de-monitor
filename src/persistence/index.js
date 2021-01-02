@@ -30,7 +30,7 @@ const createUnixSocketPool = (connectionDetails, config) => {
   console.log('Initializing DB connection', 'Database:', process.env.DB_NAME, '. Using table', DATALOG_TABLE_NAME);
   // Establish a connection to the database
   return Knex({
-    debug: true,
+    debug: false,
     pool: {min: 0, max: 8},
     client: 'pg',
     connection: connectionDetails,
