@@ -1,6 +1,9 @@
+const {
+  isNotificaitonMessage
+} = require('./utils/publishMessage')
 
-const processMsg = msgPayload => {
-  console.log('Analyzing', JSON.stringify(msgPayload));
+const processMsg = async msgPayload => {
+  console.log('Notifier checking message', JSON.stringify(msgPayload));
   console.log('Nr hits', msgPayload.hits.length);
   
 }
@@ -14,16 +17,17 @@ const processMsg = msgPayload => {
  * @param {object} message The Pub/Sub message.
  * @param {object} context The event metadata.
  */
-exports.notifyAll = (message, context) => {
+exports.notifyAll = async (message, context) => {
   console.log('NOTIFIER TRIGGERED!', JSON.stringify(message), JSON.stringify(context));
-  const msgType = message.attributes ? message.attributes.type : false;
-  if(!msgType || msgType !== 'notify') {
-    console.log('Notifier skipping message.', msgType);
+  
+  if (!isNotificaitonMessage(message)) {
+    console.log('Notifier skipping message.', message);
     return;
   }
   const payload = message.data
     ? Buffer.from(message.data, 'base64').toString()
     : false;
-  if (payload != false)
-    processMsg(JSON.parse(payload));
+  
+  if (payload !== false)
+    return await processMsg(JSON.parse(payload));
 };

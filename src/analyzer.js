@@ -47,7 +47,7 @@ const analyzeMsg = async newReport => {
 exports.analyzeObservations = async (message, context) => {
   console.log('ANALYZER TRIGGERED!', JSON.stringify(message), JSON.stringify(context));
   if (!isObservationMessage(message)) {
-    console.log('Analyzer skipping message.', msgType);
+    console.log('Analyzer skipping message.', message);
     return;
   }
   const payload = message.data
