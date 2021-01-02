@@ -1,0 +1,27 @@
+
+# Use the official lightweight Node.js 12 image.
+# https://hub.docker.com/_/node
+FROM node:12-slim
+
+# Create and change to the app directory.
+WORKDIR /usr/src/app
+
+# Copy application dependency manifests to the container image.
+# A wildcard is used to ensure both package.json AND package-lock.json are copied.
+# Copying this separately prevents re-running npm install on every code change.
+COPY package*.json ./
+
+# Install dependencies.
+RUN npm ci --only=production
+COPY . .
+EXPOSE 8080
+ENV  PATH="${PATH}:/node_modules/.bin"
+ENV NODE_ENV="production"
+ENV PUBSUB_TOPIC="projects/ornitho-de-monitor/topics/ornitho-bus"
+ENV GOOGLE_CLOUD_PROJECT="ornitho-de-monitor"
+ENV GOOGLE_APPLICATION_CREDENTIALS="pubsubkey.json"
+
+COPY . .
+
+# Run the web service on container startup.
+CMD [ "node", "src/server-eventHandlers.js" ]

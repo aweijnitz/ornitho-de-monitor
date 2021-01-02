@@ -3,7 +3,7 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler'); // See https://zellwk.com/blog/async-await-express
 const rateLimit = require("express-rate-limit");
-const getObservations = require('./src/scraper').getObservations;
+const getObservations = require('./scraper').getObservations;
 
 
 // Constants. Can be hard coded, since it will be running inside Docker container

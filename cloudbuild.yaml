@@ -11,48 +11,46 @@ steps:
   - name: 'gcr.io/cloud-builders/npm'
     args: [ 'test' ]
     dir: '.'
-  # Deploy the notifier function
-  - name: 'gcr.io/cloud-builders/gcloud'
-    args:
-      - 'functions'
-      - 'deploy'
-      - 'notifyAll'
-      - '--source=./src'
-      - '--entry-point=notifyAll'
-      - '--runtime=nodejs12'
-      - '--memory=128MB'
-      - '--max-instances=3'
-      - '--trigger-topic=ornitho-bus'
-  # Deploy the analyzer function
-  - name: 'gcr.io/cloud-builders/gcloud'
-    args:
-      - 'functions'
-      - 'deploy'
-      - 'analyzeObservations'
-      - '--source=./src'
-      - '--entry-point=analyzeObservations'
-      - '--runtime=nodejs12'
-      - '--memory=128MB'
-      - '--max-instances=3'
-      - '--trigger-topic=ornitho-bus'
-  # Build the container image for the scraper
+  # Build and Deploy the analyzer and notifier service (Cloud Run Container)
+  # ---------
   - name: 'gcr.io/cloud-builders/docker'
-    args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$COMMIT_SHA', '.' ]
+    args: [ 'build', '-f', 'Dockerfile.eventHandlers', '-t', 'gcr.io/$PROJECT_ID/${_SERVICE_NAME_EVENTHANDLERS}:$COMMIT_SHA', '.' ]
   # Push the container image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: [ 'push', 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$COMMIT_SHA' ]
+    args: [ 'push', 'gcr.io/$PROJECT_ID/${_SERVICE_NAME_EVENTHANDLERS}:$COMMIT_SHA' ]
+  # Deploy  container image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - '${_SERVICE_NAME_EVENTHANDLERS}'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/${_SERVICE_NAME_EVENTHANDLERS}:$COMMIT_SHA'
+      - '--region'
+      - '${_DEPLOY_REGION}'
+      - '--platform'
+      - 'managed'
+  # Build and Deploy the scraper
+  # ---------
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'build', '-f', 'Dockerfile.scraper', '-t', 'gcr.io/$PROJECT_ID/${_SERVICE_NAME_SCRAPER}:$COMMIT_SHA', '.' ]
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'push', 'gcr.io/$PROJECT_ID/${_SERVICE_NAME_SCRAPER}:$COMMIT_SHA' ]
   # Deploy scraper container image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
       - 'run'
       - 'deploy'
-      - '${_SERVICE_NAME}'
+      - '${_SERVICE_NAME_SCRAPER}'
       - '--image'
-      - 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$COMMIT_SHA'
+      - 'gcr.io/$PROJECT_ID/${_SERVICE_NAME_SCRAPER}:$COMMIT_SHA'
       - '--region'
       - '${_DEPLOY_REGION}'
       - '--platform'
       - 'managed'
 images:
-  - 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/${_SERVICE_NAME_EVENTHANDLERS}:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/${_SERVICE_NAME_SCRAPER}:$COMMIT_SHA'
