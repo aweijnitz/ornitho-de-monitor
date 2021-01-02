@@ -97,7 +97,7 @@ const scrapeData = async (usePubSub = true) => {
       }
       return result;
     });
-    scrapedData.url = URL;
+    scrapedData.url = getScrapeURL();
     scrapedData.md5 = crypto.createHash('md5').update(JSON.stringify(scrapedData.hits)).digest("hex")
     scrapedData.runTimestamp = Date.now();
     scrapedData.reportDate = getTodayString();

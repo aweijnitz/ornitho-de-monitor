@@ -1,34 +1,21 @@
 const crypto = require('crypto');
+const {Storage} = require('@google-cloud/storage');
 
-/****** NOTE!
- * Currently not in use, since Could Functions for some reason do not install the storage npm package.
- *
- * Leaving this file here for better days. See index.js for the database backed storage.
- *
- *
- * This was the old initialization code
- *
- * // Setup Storage
- // https://googleapis.dev/nodejs/storage/latest/
- const bucketName = 'ornithodata';
- const bookKeepingFileName = 'ornitho-de-data.json'
- const storage = new Storage(); // new Storage({keyFilename: "key.json"});
- const myBucket = storage.bucket(bucketName);
- *
- */
+// Setup Storage
+// https://googleapis.dev/nodejs/storage/latest/
+const bucketName = 'ornithodata';
+const reportFileName = 'index.handlebars'
+const storage = new Storage(); // new Storage({keyFilename: "key.json"});
+const myBucket = storage.bucket(bucketName);
 
-
-/**
- * Helper to create the scaffold of the storage object.
- *
- * @return {{reports: [], created: number, latestHash: string}}
- */
 const emptyDataFileObject = () => {
   return {
-    created: Date.now(),
-    latestHash: crypto.createHash('md5').update('no-data').digest("hex"),
-    reports: []
-  }
+    "md5": "78d3b2ae9b204514921f00da685ad193",
+    "runTimestamp": 1609605194925,
+    "reportDate": "1.1.2000",
+    "url": "http://localhost:8080",
+    "hits": []
+  };
 }
 
 /**
@@ -39,11 +26,11 @@ const emptyDataFileObject = () => {
  */
 const createIfNotExists = async storageFile => {
   const exists = await storageFile.exists();
-  console.log('Exists:', exists);
+  console.log('File Exists:', reportFileName, exists);
   if (!exists[0]) {
     // Create empty data file
     try {
-      await storageFile.save(JSON.stringify(emptyDataFileObject()));
+      return storageFile.save(JSON.stringify(emptyDataFileObject()));
     } catch (error) {
       console.error('Error creating empty start file', error);
     }
@@ -57,14 +44,15 @@ const createIfNotExists = async storageFile => {
  * @param file
  * @return {Promise<any>}
  */
-const readJSONFile = async file => {
+const readJSONFile = async fileName => {
+  const file = myBucket.file(fileName);
   const data = await file.download(); // https://googleapis.dev/nodejs/storage/latest/File.html#download
   return JSON.parse(data[0].toString('utf8'));
 }
 
 
 /**
- * Add new report to archive and serialize to blob file.
+ * Serialize JSON to string and store in blob file.
  *
  * @See https://googleapis.dev/nodejs/storage/latest/File.html#save
  *
@@ -72,15 +60,38 @@ const readJSONFile = async file => {
  * @param file
  * @return {Promise<void>}
  */
-const storeData = async (contents, file) => {
+const storeObject = async (object, fileName) => {
   console.log('Saving new report');
-  return file.save(JSON.stringify(contents));
+  const file = myBucket.file(fileName);
+  const metadata = {
+    contentType: 'application/json',
+    metadata: {}
+  };
+  await file.setMetadata(metadata);
+  return file.save(JSON.stringify(object));
 }
 
-
+/**
+ * Store HTML in blob.
+ *
+ * @param htmlString
+ * @param fileName
+ * @return {Promise<void>}
+ */
+const storeHTML = async (htmlString, fileName) => {
+  console.log('Saving new HTML report', fileName);
+  const file = myBucket.file(fileName);
+  const metadata = {
+    contentType: 'text/html',
+    metadata: {}
+  };
+  await file.setMetadata(metadata);
+  return file.save(htmlString);
+}
 
 module.exports = {
   createIfNotExists,
   readJSONFile,
-  storeData
+  storeObject,
+  storeHTML
 }

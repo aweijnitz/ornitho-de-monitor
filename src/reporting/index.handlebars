@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Latest Uncommon Sightings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton-framework/1.1.1/skeleton.min.css"
+          integrity="sha512-zzq8ZrbhP7DGbwClbqSYuo+di3FvAlMNykCKWE6pHuqmCgGjJSISDTzy7QkdI2ajLlgw0nx6hxIu8os2hYuN8w=="
+          crossorigin="anonymous"/>
+</head>
+<body>
+<!-- Report hash {{md5}} -->
+
+<!-- .container is the GetSkeleton CSS main centered wrapper -->
+<div class="container">
+    <h1>Latest Scan Result</h1>
+    <p>Rare and uncommon sightings in upper Bavaria. Updated hourly Thursday to Sunday.</p>
+    <p>{{reportDate}}</p>
+    <h2>By Species</h2>
+    <ul>
+    {{#each species}}
+        <li>{{this}}</li>
+    {{/each}}
+    </ul>
+
+    <h2>By Location</h2>
+    {{#each hits}}
+        <h3>{{location}}</h3>
+        <ul>
+            {{#each reports}}
+                <li>{{this}}</li>
+            {{/each}}
+        </ul>
+    {{/each}}
+
+    <a href="{{url}}" target="_top">Open in Ornitho</a>
+</div>
+</body>
+</html>

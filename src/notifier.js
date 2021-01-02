@@ -1,3 +1,4 @@
+const {publishHTMLReport} = require('./reporting/reporting');
 const {
   isNotificaitonMessage
 } = require('./utils/publishMessage')
@@ -5,7 +6,8 @@ const {
 const processMsg = async msgPayload => {
   console.log('Notifier checking message', JSON.stringify(msgPayload));
   console.log('Nr hits', msgPayload.hits.length);
-  
+  publishHTMLReport(msgPayload);
+  // TODO: Add user notification with URL back to HTML report
 }
 
 /**
