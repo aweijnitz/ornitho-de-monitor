@@ -3,8 +3,10 @@
   "version": "0.0.1",
   "description": "Collect latest interesting observations from ornitho.de",
   "main": "src/index.js",
+  "engines" : { "node" : ">=12.13" },
   "scripts": {
-    "devFunctions": "npx functions-framework --target=ornitho-de-monitor",
+    "devFunctionAnalyzer": "npx functions-framework --target=analyzeObservations --signature-type=event",
+    "devFunctionNotifier": "npx functions-framework --target=notifyAll --signature-type=event",
     "buildCloudRunContainer": "gcloud builds submit --tag gcr.io/ornitho-de-monitor/ornitho-de-scraper",
     "deployCloudRunContainer": "gcloud run deploy ornitho-de-scraper --region=europe-west6 --image gcr.io/ornitho-de-monitor/ornitho-de-scraper --platform managed",
     "deployAnalyzer": "gcloud functions deploy analyzeObservations --source=./src --entry-point=analyzeObservations --runtime nodejs12 --memory=256MB --max-instances=3 --trigger-topic=ornitho-bus",

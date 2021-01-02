@@ -7,6 +7,8 @@ runLocalScrape.js
 pubsubkey.json
 cloud_sql_proxy
 db-details.txt
+.DS_Store
+scripts/buildLocal-analyzer.sh
 
 # Created by https://www.toptal.com/developers/gitignore/api/emacs,node,webstorm,intellij
 # Edit at https://www.toptal.com/developers/gitignore?templates=emacs,node,webstorm,intellij
