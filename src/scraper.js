@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 const crypto = require('crypto');
 const { publishObservationsMessage } = require('./utils/publishMessage');
-const { formatDate } = require('utils/reportUtils');
+const { formatDate } = require('./utils/reportUtils');
 const {
   isProductionMode,
   currentRunMode
