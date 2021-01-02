@@ -40,7 +40,6 @@ const createUnixSocketPool = (connectionDetails, config) => {
 };
 
 let knex = null;
-createDataTable(); // Ensure table exists before processing messages
 
 if (isProductionMode()) {
   const dbSocketPath = process.env.DB_SOCKET_PATH || '/cloudsql';
@@ -60,6 +59,8 @@ if (isProductionMode()) {
     port: 5432
   });
 }
+createDataTable(); // Ensure table exists before processing messages
+
 
 const getLatestNReports = async maxNumberReports => {
   console.log('getLatestNReports - fetching');
