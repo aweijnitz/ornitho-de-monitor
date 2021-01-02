@@ -7,10 +7,31 @@ const {
 
 const DATALOG_TABLE_NAME = 'datalog_' + currentRunMode();
 
+const storageExists = async () => {
+  return await knex.schema.hasTable(DATALOG_TABLE_NAME);
+}
+
+const createDataTable = () => {
+  knex.schema.hasTable(DATALOG_TABLE_NAME).then(function (exists) {
+    console.log('Exists: ', exists, DATALOG_TABLE_NAME, 'Database ', process.env.DB_NAME);
+    if (!exists) {
+      return knex.schema.createTable(DATALOG_TABLE_NAME, function (t) {
+        t.increments('id').primary();
+        t.timestamps();
+        t.string('hash', 32);
+        t.jsonb('report');
+        console.log('table created', DATALOG_TABLE_NAME)
+      });
+    }
+  });
+}
+
 const createUnixSocketPool = (connectionDetails, config) => {
   console.log('Initializing DB connection', 'Database:', process.env.DB_NAME, '. Using table', DATALOG_TABLE_NAME);
   // Establish a connection to the database
   return Knex({
+    debug: true,
+    pool: {min: 0, max: 8},
     client: 'pg',
     connection: connectionDetails,
     // ... Specify additional properties here.
@@ -19,6 +40,7 @@ const createUnixSocketPool = (connectionDetails, config) => {
 };
 
 let knex = null;
+createDataTable(); // Ensure table exists before processing messages
 
 if (isProductionMode()) {
   const dbSocketPath = process.env.DB_SOCKET_PATH || '/cloudsql';
@@ -62,27 +84,18 @@ const _insertMsg = async reportMsg => {
 
 const saveReport = async reportMsg => {
   const exists = await storageExists();
-  if (!exists) {
-    console.log('Table not found! Creating...')
-    return knex.schema.createTable(DATALOG_TABLE_NAME, async (t) => {
-      // Weirdly, there doesn't seem to exists a promised based version of this function. Using callback style for now.
-      t.increments('id').primary();
-      t.timestamps();
-      t.string('hash', 32);
-      t.jsonb('report')
-      await _insertMsg(reportMsg);
-    });
-  } else
-    await _insertMsg(reportMsg);
+  console.log('SAVING ENTRY. Table ready: ', exists, 'db: ', process.env.DB_NAME);
+  await _insertMsg(reportMsg);
 }
 
-const storageExists = async callback => {
-  return await knex.schema.hasTable(DATALOG_TABLE_NAME);
+const dropTable = () => {
+  return knex.schema.dropTable(DATALOG_TABLE_NAME);
 }
-
 
 module.exports = {
   getLatestNReports,
   saveReport,
+  createDataTable,
+  dropTable
 }
 

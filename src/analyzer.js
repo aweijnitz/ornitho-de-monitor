@@ -19,7 +19,7 @@ const {
  */
 const analyzeMsg = async newReport => {
   console.log('Analyzing', JSON.stringify(newReport));
-  console.log('hits', newReport.hits);
+  //console.log('hits', newReport.hits);
   const storageRecord = await getLatestNReports(1);
   const lastReport = storageRecord && storageRecord.length > 0 ? storageRecord[0].report : createEmptyReport();
   console.log('lastReport', JSON.stringify(lastReport));
@@ -29,7 +29,7 @@ const analyzeMsg = async newReport => {
     // Ok, so we now know we have a report which is different from last time.
     // If the day rolled over, the report will be different, but we don't want to be notified about it,
     // but we got here, so the report changed and it is worth while notifying about it.
-    publishNotificationMessage(newReport);
+    await publishNotificationMessage(newReport);
     return saveReport(newReport);
   }
 }
