@@ -4,7 +4,7 @@ const express = require('express');
 const asyncHandler = require('express-async-handler'); // See https://zellwk.com/blog/async-await-express
 const rateLimit = require("express-rate-limit");
 const bodyParser = require('body-parser');
-const {isObservationMessage} = require('./utils/reportUtils');
+const {isObservationMessage} = require('./utils/publishMessage');
 const {analyzeObservations} = require('./analyzer');
 const {notifyAll} = require('./notifier');
 
