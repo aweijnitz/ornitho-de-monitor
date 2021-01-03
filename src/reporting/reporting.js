@@ -4,7 +4,7 @@ const {storeHTML} = require('../persistence/storageUtils');
 const publishHTMLReport = async reportMsg => {
   console.log('Uploading new report');
   const reportHTML = renderReport(reportMsg);
-  return storeHTML(reportHTML);
+  return storeHTML(reportHTML, "index.html");
 }
 
 module.exports = {

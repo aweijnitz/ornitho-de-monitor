@@ -8,35 +8,6 @@ const reportFileName = 'index.handlebars'
 const storage = new Storage(); // new Storage({keyFilename: "key.json"});
 const myBucket = storage.bucket(bucketName);
 
-const emptyDataFileObject = () => {
-  return {
-    "md5": "78d3b2ae9b204514921f00da685ad193",
-    "runTimestamp": 1609605194925,
-    "reportDate": "1.1.2000",
-    "url": "http://localhost:8080",
-    "hits": []
-  };
-}
-
-/**
- * Create empty data file in Google Cloud Storage, if not exists
- *
- * @param storageFile
- * @return {Promise<void>}
- */
-const createIfNotExists = async storageFile => {
-  const exists = await storageFile.exists();
-  console.log('File Exists:', reportFileName, exists);
-  if (!exists[0]) {
-    // Create empty data file
-    try {
-      return storageFile.save(JSON.stringify(emptyDataFileObject()));
-    } catch (error) {
-      console.error('Error creating empty start file', error);
-    }
-  }
-};
-
 
 /**
  * Read and de-serialize JSON object from blob file.
@@ -56,19 +27,26 @@ const readJSONFile = async fileName => {
  *
  * @See https://googleapis.dev/nodejs/storage/latest/File.html#save
  *
- * @param report
- * @param file
- * @return {Promise<void>}
+ * @param object
+ * @param fileName
+ * @return publicUrl or null
  */
 const storeObject = async (object, fileName) => {
   console.log('Saving new report');
-  const file = myBucket.file(fileName);
-  const metadata = {
-    contentType: 'application/json',
-    metadata: {}
-  };
-  await file.setMetadata(metadata);
-  return file.save(JSON.stringify(object));
+  try {
+    const file = myBucket.file(fileName);
+    const metadata = {
+      contentType: 'application/json',
+      metadata: {}
+    };
+    await file.setMetadata(metadata);
+    await file.save(JSON.stringify(object));
+    await file.makePublic();
+    return file.publicUrl();
+  } catch (err) {
+    console.log("SAVING ERROR", fileName, err.message);
+  }
+  return null;
 }
 
 /**
@@ -76,21 +54,27 @@ const storeObject = async (object, fileName) => {
  *
  * @param htmlString
  * @param fileName
- * @return {Promise<void>}
+ * @return publicUrl, or null
  */
 const storeHTML = async (htmlString, fileName) => {
   console.log('Saving new HTML report', fileName);
-  const file = myBucket.file(fileName);
-  const metadata = {
-    contentType: 'text/html',
-    metadata: {}
-  };
-  await file.setMetadata(metadata);
-  return file.save(htmlString);
+  try {
+    const file = myBucket.file(fileName);
+    const metadata = {
+      contentType: 'text/html',
+      metadata: {}
+    };
+    await file.setMetadata(metadata);
+    await file.save(htmlString);
+    await file.makePublic();
+    return file.publicUrl();
+  } catch(err) {
+    console.log("SAVING ERROR", fileName, err.message);
+  }
+  return null;
 }
 
 module.exports = {
-  createIfNotExists,
   readJSONFile,
   storeObject,
   storeHTML

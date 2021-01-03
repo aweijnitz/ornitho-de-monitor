@@ -2,13 +2,14 @@ setAPICredentials.sh
 setGCloudProject.sh
 testRun.sh
 localInvoke.sh
-runLocalScrape.js
+runLocal*js
 .idea/
 pubsubkey.json
 cloud_sql_proxy
 db-details.txt
 .DS_Store
 scripts/buildLocal-analyzer.sh
+testdata/report.html
 
 # Created by https://www.toptal.com/developers/gitignore/api/emacs,node,webstorm,intellij
 # Edit at https://www.toptal.com/developers/gitignore?templates=emacs,node,webstorm,intellij
