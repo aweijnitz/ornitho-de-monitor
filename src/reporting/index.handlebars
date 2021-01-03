@@ -6,11 +6,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton-framework/1.1.1/skeleton.min.css"
           integrity="sha512-zzq8ZrbhP7DGbwClbqSYuo+di3FvAlMNykCKWE6pHuqmCgGjJSISDTzy7QkdI2ajLlgw0nx6hxIu8os2hYuN8w=="
           crossorigin="anonymous"/>
+    <link rel='manifest' href='/manifest.json'>
+
     <style>
         body {
             color: #40424a;
             background: #F5F5F5;
         }
+
         h1 {
             font-size: xx-large;
         }
@@ -21,6 +24,7 @@
 
 <!-- .container is the GetSkeleton CSS main centered wrapper -->
 <div class="container">
+    <pwa-install></pwa-install>
     <p>Rare and uncommon sightings in upper Bavaria. Updated hourly Thursday to Sunday.</p>
     <a href="{{url}}" target="_top">Open in Ornitho</a>
 
@@ -32,9 +36,11 @@
         </tr>
         </thead>
         <tbody>
-            {{#each species}}
-                <tr><td>{{this}}</td></tr>
-            {{/each}}
+        {{#each species}}
+            <tr>
+                <td>{{this}}</td>
+            </tr>
+        {{/each}}
         </tbody>
     </table>
     <table class="u-full-width">
@@ -61,5 +67,24 @@
     </table>
 
 </div>
+<script
+        type="module"
+        src="https://cdn.jsdelivr.net/npm/@pwabuilder/pwainstall"
+></script>
+<script type="module">
+
+    // This is the "Background Sync" service worker
+    // From https://www.pwabuilder.com/serviceworker
+
+    /*
+    This code uses the pwa-update web component https://github.com/pwa-builder/pwa-update to register your service worker,
+    tell the user when there is an update available and let the user know when your PWA is ready to use offline.
+    */
+
+    import 'https://cdn.jsdelivr.net/npm/@pwabuilder/pwaupdate';
+    const el = document.createElement('pwa-update');
+    document.body.appendChild(el);
+
+</script>
 </body>
 </html>
